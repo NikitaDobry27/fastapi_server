@@ -1,16 +1,51 @@
-# This is a sample Python script.
+from typing import List
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+import uvicorn
+from fastapi import FastAPI, Request
+from pydantic import BaseModel
+
+from rivet_client import RivetClient
+
+app = FastAPI()
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+class EventID(BaseModel):
+    workspace_id: str
+    object_id: str
+    record_id: str
 
 
-# Press the green button in the gutter to run the script.
+class Actor(BaseModel):
+    type: str
+    id: str
+
+
+class Event(BaseModel):
+    event_type: str
+    id: EventID
+    actor: Actor
+
+
+class FirstPayment(BaseModel):
+    webhook_id: str
+    events: List[Event]
+
+
+rc = RivetClient()
+
+
+@app.post('/debug')
+async def test(request: Request):
+    body = await request.body()
+    print("test riggered:\n")
+    print("Request body:", body.decode("utf-8"))
+    return {"message": "Request received"}
+
+
+@app.post('/wrap-forward/first-payment')
+async def wf_first_payment(first_payment: FirstPayment):
+    rc.forward_first_payment(first_payment.model_dump())
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    uvicorn.run(app)

@@ -45,6 +45,7 @@ async def test(request: Request):
 @app.post('/wrap-forward/first-payment')
 async def wf_first_payment(first_payment: FirstPayment):
     rc.forward_first_payment(first_payment.model_dump())
+    return {"message": "Request received"}
 
 
 if __name__ == '__main__':

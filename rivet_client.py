@@ -1,6 +1,5 @@
 import requests
 
-
 class RivetClient:
     def __init__(self):
         self.base_url = 'https://services.kirill-markin.com/rivet-soax-server/api/pipelines/operations'

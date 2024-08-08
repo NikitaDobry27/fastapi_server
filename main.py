@@ -43,10 +43,18 @@ async def test(request: Request):
 
 
 @app.post('/wrap-forward/first-payment')
-async def wf_first_payment(first_payment: FirstPayment):
-    rc.forward_first_payment(first_payment.model_dump())
+async def wf_first_payment(request: Request):
+    body = await request.body()
+    print("Request body:", body.decode("utf-8"))
+    rc.forward_first_payment(request.model_dump())
     return {"message": "Request received"}
 
+@app.post('/wrap-forward/user-for-won-deals')
+async def wf_user_for_won_deals(request: Request):
+    body = await request.body()
+    print("Request body:", body.decode("utf-8"))
+    rc.forward_first_payment(request.model_dump())
+    return {"message": "Request received"}
 
 if __name__ == '__main__':
     uvicorn.run(app)

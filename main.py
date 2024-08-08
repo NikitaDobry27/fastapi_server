@@ -54,7 +54,7 @@ async def wf_user_for_won_deals(request: Request):
     body = await request.body()
     print("Request body:", body.decode("utf-8"))
     rc.forward_first_payment(body)
-    return {"message": "Request received"}
+    return {"message": "Request received."}
 
 if __name__ == '__main__':
     uvicorn.run(app)

@@ -2,7 +2,7 @@ import requests
 
 class RivetClient:
     def __init__(self):
-        self.base_url = 'https://services.kirill-markin.com/rivet-soax-server/api/pipelines/operations'
+        self.base_url = 'https://rivet-soax-operations-production.up.railway.app/api/pipelines/operations'
 
     def forward_first_payment(self, json):
         url = f"{self.base_url}/first_payment_date_amount"

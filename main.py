@@ -66,11 +66,15 @@ async def wf_user_for_won_deals(request: Request):
 
 @app.post('/wrap-forward/slashid-attio-user')
 async def wf_slashid_attio_user(request: Request):
-    body = await request.body()
-    jwt_token = body.decode("utf-8")
-    decoded_body = decode_jwt(jwt_token)
-    print("Decoded JWT:", decoded_body)
-    rc.slashid_to_attio_user_creation(decoded_body)    
+    try:
+        body = await request.body()
+        jwt_token = body.decode("utf-8")
+        decoded_body = decode_jwt(jwt_token)
+        print("Decoded JWT:", decoded_body)
+        rc.slashid_to_attio_user_creation(decoded_body)
+    
+    except Exception as e:
+        print(f"Error processing webhook: {str(e)}")
     return {"message": "Request received"}
 
 

@@ -25,3 +25,14 @@ class RivetClient:
         except requests.exceptions.RequestException as e:
             print(f"Error: {e}")
             return None
+
+    def slashid_to_attio_user_creation(self, json):
+        url = f"{self.base_url}/slashid_to_attio_user"
+        try:
+            search_data = {"inputs": {"webhook_data": {"type": "object", "value": json}}}
+            response = requests.post(url, json=search_data)
+            print(json)
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            print(f"Error: {e}")
+            return None

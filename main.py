@@ -48,5 +48,12 @@ async def wf_user_for_won_deals(request: Request):
     rc.forward_user_for_won_deals(body)
     return {"message": "Request received"}
 
+@app.post('/wrap-forward/slashid-attio-user')
+async def wf_slashid_attio_user(request: Request):
+    body = await request.json()
+    print("Request body:", body)
+    rc.slashid_to_attio_user_creation(body.decode("utf-8"))
+    return {"message": "Request received"}
+
 if __name__ == '__main__':
     uvicorn.run(app)

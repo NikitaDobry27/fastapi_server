@@ -1,6 +1,8 @@
 from typing import List
 import uvicorn
-from fastapi import FastAPI, Request
+import base64
+import json
+from fastapi import FastAPI, Request, HTTPException
 from pydantic import BaseModel
 from rivet_client import RivetClient
 
@@ -26,6 +28,20 @@ class FirstPayment(BaseModel):
 
 rc = RivetClient()
 
+def decode_jwt(token: str) -> dict:
+    """Decode JWT token without external libraries."""
+    try:
+        header, payload, signature = token.split('.')
+        
+        # Decode the payload
+        decoded_payload = base64.urlsafe_b64decode(payload + '==')  # Adding padding if necessary
+        decoded_json = json.loads(decoded_payload)
+        
+        return decoded_json
+    
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to decode JWT: {str(e)}")
+
 @app.post('/debug')
 async def test(request: Request):
     body = await request.body()
@@ -50,10 +66,13 @@ async def wf_user_for_won_deals(request: Request):
 
 @app.post('/wrap-forward/slashid-attio-user')
 async def wf_slashid_attio_user(request: Request):
-    body = await request.json()
-    print("Request body:", body)
-    rc.slashid_to_attio_user_creation(body.decode("utf-8"))
+    body = await request.body()
+    jwt_token = body.decode("utf-8")
+    decoded_body = decode_jwt(jwt_token)
+    print("Decoded JWT:", decoded_body)
+    rc.slashid_to_attio_user_creation(decoded_body)    
     return {"message": "Request received"}
+
 
 if __name__ == '__main__':
     uvicorn.run(app)

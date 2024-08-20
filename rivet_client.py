@@ -2,7 +2,7 @@ import requests
 
 class RivetClient:
     def __init__(self):
-        self.base_url = 'https://rivet-soax-operations-production.up.railway.app/api/pipelines/operations'
+        self.base_url = 'https://rivet.soax.tech/api/pipelines/operations'
 
     def forward_first_payment(self, json):
         url = f"{self.base_url}/first_payment_date_amount"
@@ -30,7 +30,7 @@ class RivetClient:
         url = f"{self.base_url}/slashid_to_attio_user"
         try:
             search_data = {"inputs": {"webhook_data": {"type": "object", "value": json}}}
-            response = requests.post(url, json=search_data, verify=False)
+            response = requests.post(url, json=search_data)
             print(json)
             return response.json()
         except requests.exceptions.RequestException as e:

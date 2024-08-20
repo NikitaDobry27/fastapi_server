@@ -31,6 +31,7 @@ async def test(request: Request):
     body = await request.body()
     print("test triggered:\n")
     print("Request body:", body.decode("utf-8"))
+    print("Request body raw:", body)
     return {"message": "Request received"}
 
 @app.post('/wrap-forward/first-payment')

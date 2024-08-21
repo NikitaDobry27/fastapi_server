@@ -8,9 +8,9 @@ class RivetClient:
         url = f"{self.base_url}/first_payment_date_amount"
         try:
             search_data = {"inputs": {"webhook_data": {"type": "object", "value": json}}}
-            response = requests.post(url, json=search_data, verify=False)
-            print(json)
-            return response.json()
+            print(f"Body sent to rivet: {search_data}")
+            response = requests.post(url, json=search_data)
+            print(response.json())
         except requests.exceptions.RequestException as e:
             print(f"Error: {e}")
             return None
@@ -19,8 +19,9 @@ class RivetClient:
         url = f"{self.base_url}/create_user_for_won_deals"
         try:
             search_data = {"inputs": {"webhook_data": {"type": "object", "value": json}}}
+            print(f"Body sent to rivet: {search_data}")
             response = requests.post(url, json=search_data)
-            print(json)
+            print(response.json())
             return response.json()
         except requests.exceptions.RequestException as e:
             print(f"Error: {e}")
@@ -30,8 +31,9 @@ class RivetClient:
         url = f"{self.base_url}/slashid_to_attio_user"
         try:
             search_data = {"inputs": {"webhook_data": {"type": "object", "value": json}}}
+            print(f"Body sent to rivet: {search_data}")
             response = requests.post(url, json=search_data)
-            print(f"Body sent to rivet: {json}")
+            print(response.json())
             return response.json()
         except requests.exceptions.RequestException as e:
             print(f"Error: {e}")

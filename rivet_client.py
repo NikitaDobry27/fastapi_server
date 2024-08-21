@@ -31,7 +31,7 @@ class RivetClient:
         try:
             search_data = {"inputs": {"webhook_data": {"type": "object", "value": json}}}
             response = requests.post(url, json=search_data)
-            print(json)
+            print(f"Body sent to rivet: {json}")
             return response.json()
         except requests.exceptions.RequestException as e:
             print(f"Error: {e}")

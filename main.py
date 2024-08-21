@@ -2,7 +2,7 @@ from typing import List
 import uvicorn
 import base64
 import json
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 from rivet_client import RivetClient
 
@@ -42,6 +42,13 @@ def decode_jwt(token: str) -> dict:
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to decode JWT: {str(e)}")
 
+def process_slashid_attio_user(decoded_body: dict):
+    """Function to process the webhook in background."""
+    try:
+        rc.slashid_to_attio_user_creation(decoded_body)
+    except Exception as e:
+        print(f"Error processing webhook: {str(e)}")
+
 @app.post('/debug')
 async def test(request: Request):
     body = await request.body()
@@ -65,18 +72,22 @@ async def wf_user_for_won_deals(request: Request):
     return {"message": "Request received"}
 
 @app.post('/wrap-forward/slashid-attio-user')
-async def wf_slashid_attio_user(request: Request):
+async def wf_slashid_attio_user(request: Request, background_tasks: BackgroundTasks):
     try:
         body = await request.body()
         jwt_token = body.decode("utf-8")
         decoded_body = decode_jwt(jwt_token)
         print("Decoded JWT:", decoded_body)
-        rc.slashid_to_attio_user_creation(decoded_body)
-    
+        
+        # Add the processing task to the background
+        background_tasks.add_task(process_slashid_attio_user, decoded_body)
+        
+        # Immediately return a 200 response
+        return {"message": "Request received"}
+
     except Exception as e:
         print(f"Error processing webhook: {str(e)}")
-    return {"message": "Request received"}
-
+        raise HTTPException(status_code=400, detail=f"Error processing webhook: {str(e)}")
 
 if __name__ == '__main__':
     uvicorn.run(app)

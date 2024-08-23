@@ -93,12 +93,15 @@ async def wf_slashid_attio_user(request: Request, background_tasks: BackgroundTa
 async def chargebee_attio_sync(request: Request, background_tasks: BackgroundTasks):
     try:
         body = await request.body()
-        print("Request body:", body)
-        background_tasks.add_task(process_slashid_attio_user, body)
+        body_str = body.decode('utf-8')
+        body_json = json.loads(body_str)
+        print("Request body JSON:", body_json)
+        background_tasks.add_task(process_slashid_attio_user, body_json)
         return {"message": "Request received"}
     except Exception as e:
         print(f"Error processing webhook: {str(e)}")
         raise HTTPException(status_code=400, detail=f"Error processing webhook: {str(e)}")
+
 
 if __name__ == '__main__':
     uvicorn.run(app)

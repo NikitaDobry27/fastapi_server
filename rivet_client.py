@@ -39,10 +39,10 @@ class RivetClient:
             print(f"Error: {e}")
             return None
         
-    def chargebee_to_attio(self, json):
+    def chargebee_to_attio(self, json_data):
         url = f"{self.base_url}/chargebee_handler"
         try:
-            search_data = {"inputs": {"webhook_data": {"type": "object", "value": json}}}
+            search_data = {"inputs": {"webhook_data": {"type": "object", "value": json_data}}}
             print(f"Body sent to rivet: {search_data}")
             response = requests.post(url, json=search_data)
             print(response.json())

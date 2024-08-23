@@ -49,6 +49,12 @@ def process_slashid_attio_user(decoded_body: dict):
     except Exception as e:
         print(f"Error processing webhook: {str(e)}")
 
+def process_chargebee_attio(body_json:dict):
+    try:
+        rc.chargebee_to_attio_user_creation(body_json)
+    except Exception as e: 
+        print(f"Error processing webhook: {str(e)}")
+
 @app.post('/debug')
 async def test(request: Request):
     body = await request.body()
@@ -96,7 +102,7 @@ async def chargebee_attio_sync(request: Request, background_tasks: BackgroundTas
         body_str = body.decode('utf-8')
         body_json = json.loads(body_str)
         print("Request body JSON:", json.dumps(body_json))
-        background_tasks.add_task(process_slashid_attio_user, body_json)
+        background_tasks.add_task(process_chargebee_attio, body_json)
         return {"message": "Request received"}
     except Exception as e:
         print(f"Error processing webhook: {str(e)}")

@@ -8,6 +8,15 @@ from rivet_client import RivetClient
 
 app = FastAPI()
 
+MAX_REQUEST_SIZE = 1_000_000  # 1 MB
+
+@app.middleware("http")
+async def limit_request_size(request: Request, call_next):
+    request_body = await request.body()
+    if len(request_body) > MAX_REQUEST_SIZE:
+        raise HTTPException(status_code=413, detail="Request body too large")
+    return await call_next(request)
+
 class EventID(BaseModel):
     workspace_id: str
     object_id: str

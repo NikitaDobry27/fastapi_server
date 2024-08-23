@@ -77,7 +77,7 @@ async def wf_slashid_attio_user(request: Request, background_tasks: BackgroundTa
         body = await request.body()
         jwt_token = body.decode("utf-8")
         decoded_body = decode_jwt(jwt_token)
-        print("Decoded JWT:", decoded_body)
+        print("Decoded JWT:", json.dumps(decoded_body))
         
         # Add the processing task to the background
         background_tasks.add_task(process_slashid_attio_user, decoded_body)
@@ -95,7 +95,7 @@ async def chargebee_attio_sync(request: Request, background_tasks: BackgroundTas
         body = await request.body()
         body_str = body.decode('utf-8')
         body_json = json.loads(body_str)
-        print("Request body JSON:", body_json)
+        print("Request body JSON:", json.dumps(body_json))
         background_tasks.add_task(process_slashid_attio_user, body_json)
         return {"message": "Request received"}
     except Exception as e:

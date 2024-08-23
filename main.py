@@ -51,7 +51,7 @@ def process_slashid_attio_user(decoded_body: dict):
 
 def process_chargebee_attio(body_json:dict):
     try:
-        rc.chargebee_to_attio_user_creation(body_json)
+        rc.chargebee_to_attio(body_json)
     except Exception as e: 
         print(f"Error processing webhook: {str(e)}")
 

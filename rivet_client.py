@@ -64,3 +64,16 @@ class RivetClient:
         except requests.exceptions.RequestException as e:
             print(f"Error: {e}")
             return {"error": str(e)}
+
+    def intercom_dashboard(self, json_data):
+        url = f"{self.base_url}/intercom_dashboard"
+        try:
+            search_data = {"inputs": {"webhook_data": {"type": "object", "value": json_data}}}
+            print(f"Body sent to rivet: {search_data}")
+            response = requests.post(url, json=search_data)
+            response.raise_for_status()
+            print(f"Response from rivet: {response.json()}")
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            print(f"Error: {e}")
+            return {"error": str(e)}

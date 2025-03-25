@@ -70,6 +70,11 @@ def process_orb_attio(body_json:dict):
     except Exception as e: 
         print(f"Error processing webhook: {str(e)}")
 
+def process_intercom_dashboard(body_json:dict):
+    try:
+        rc.intercom_dashboard(body_json)
+    except Exception as e: 
+        print(f"Error processing webhook: {str(e)}")
 
 @app.post('/debug')
 async def test(request: Request):
@@ -135,6 +140,22 @@ async def orb_attio_sync(request: Request, background_tasks: BackgroundTasks):
         body_json = json.loads(body_str)
         print("Request body JSON:", json.dumps(body_json))
         background_tasks.add_task(process_orb_attio, body_json)
+    except json.JSONDecodeError as json_error:
+        print(f"JSON decode error: {json_error}")
+        raise HTTPException(status_code=400, detail="Invalid JSON format")
+    except Exception as e:
+        print(f"Error processing webhook: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    return {"message": "Request received"}
+
+@app.post('/wrap-forward/intercom-dashboard')
+async def intercom_dashboard_sync(request: Request, background_tasks: BackgroundTasks):
+    try:
+        body = await request.body()
+        body_str = body.decode('utf-8')
+        body_json = json.loads(body_str)
+        print("Request body JSON:", json.dumps(body_json))
+        background_tasks.add_task(process_intercom_dashboard, body_json)
     except json.JSONDecodeError as json_error:
         print(f"JSON decode error: {json_error}")
         raise HTTPException(status_code=400, detail="Invalid JSON format")
